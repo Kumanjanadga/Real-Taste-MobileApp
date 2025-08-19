@@ -1,0 +1,39 @@
+name: flutter_auth1
+description: A new Flutter project.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.5.0  # Updated to a compatible version
+  firebase_auth: ^5.1.0  # Updated to a compatible version
+  provider: ^6.1.5
+  cloud_firestore: ^5.2.0  # Updated to a compatible version
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/chicken.jpeg
+    - assets/veggie.png
+    - assets/pizza.jpg
+    - assets/salad.jpg
+    - assets/wings.webp
+    - assets/mozzarella.jpg
+    - assets/salmon.jpg
+    - assets/pasta.jpg
+    - assets/tikka.webp
+    - assets/cake.webp
+    - assets/tiramisu.webp
+    - assets/mango_smoothie.jpg
+    - assets/chai.jpg
