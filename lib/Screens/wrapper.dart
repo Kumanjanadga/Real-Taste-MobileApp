@@ -51,7 +51,7 @@ class Wrapper extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              child: const Text('GET STARTED', style: TextStyle(fontSize: 20)),
+              child: const Text('GET START', style: TextStyle(fontSize: 20)),
             ),
           ],
         ),

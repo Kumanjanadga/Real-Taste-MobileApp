@@ -6,28 +6,30 @@ class AuthServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Register with email and password and save additional user data
-  Future registerWithEmailAndPassword(String email, String password, {Map<String, String>? userData}) async {
+  Future<User?> registerWithEmailAndPassword(String email, String password, {Map<String, String>? userData}) async {
     try {
+      print('Attempting registration for $email');
       UserCredential result = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: email.trim(),
+        password: password.trim(),
       );
-      
       User? user = result.user;
-      
       if (user != null && userData != null) {
-        // Save additional user data to Firestore
-        await _firestore.collection('users').doc(user.uid).set({
-          'uid': user.uid,
-          'email': email,
-          'firstName': userData['firstName'] ?? '',
-          'lastName': userData['lastName'] ?? '',
-          'address': userData['address'] ?? '',
-          'createdAt': FieldValue.serverTimestamp(),
-          'lastUpdated': FieldValue.serverTimestamp(),
-        });
+        try {
+          await _firestore.collection('users').doc(user.uid).set({
+            'uid': user.uid,
+            'email': email.trim(),
+            'firstName': userData['firstName'] ?? '',
+            'lastName': userData['lastName'] ?? '',
+            'address': userData['address'] ?? '',
+            'createdAt': FieldValue.serverTimestamp(),
+            'lastUpdated': FieldValue.serverTimestamp(),
+          });
+        } catch (firestoreError) {
+          print('Firestore Error: $firestoreError');
+        }
       }
-      
+      print('Registration successful for $email');
       return user;
     } catch (e) {
       print('Registration Error: $e');
@@ -36,7 +38,7 @@ class AuthServices {
   }
 
   // Sign in with email and password
-  Future signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -96,10 +98,7 @@ class AuthServices {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        // Delete user data from Firestore
         await _firestore.collection('users').doc(user.uid).delete();
-        
-        // Delete user account
         await user.delete();
         return true;
       }

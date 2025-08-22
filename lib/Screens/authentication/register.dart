@@ -19,7 +19,7 @@ class _RegisterState extends State<Register> {
   // form key to validate form inputs
   final _formKey = GlobalKey<FormState>();
 
-  //store user input values
+  // store user input values
   String firstName = '';
   String lastName = '';
   String email = '';
@@ -125,7 +125,7 @@ class _RegisterState extends State<Register> {
                   
                   // Email Field
                   TextFormField(
-                    validator: (val) => val!.isEmpty ? 'Enter an email' : null,
+                    validator: (val) => val!.isEmpty || !val.contains('@') ? 'Enter a valid email' : null,
                     onChanged: (val) {
                       setState(() {
                         email = val;
@@ -272,30 +272,39 @@ class _RegisterState extends State<Register> {
                             'address': address,
                           };
                           
-                          dynamic result = await _auth.registerWithEmailAndPassword(
-                            email, 
-                            password, 
-                            userData: userData
-                          );
-                          
-                          if (result == null) {
+                          try {
+                            dynamic result = await _auth.registerWithEmailAndPassword(
+                              email,
+                              password,
+                              userData: userData,
+                            );
+                            
+                            if (result == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please enter a valid email and password'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Registration Successful! Please Sign-In.'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignIn(toggle: widget.toggle),
+                                ),
+                              );
+                            }
+                          } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter a valid email and password'),
+                              SnackBar(
+                                content: Text('Error: $e'),
                                 backgroundColor: Colors.red,
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Registration Successful! Please Sign-In.'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SignIn(toggle: widget.toggle),
                               ),
                             );
                           }
